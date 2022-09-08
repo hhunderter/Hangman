@@ -6,6 +6,7 @@
 
 namespace Modules\Hangman\Controllers\Admin;
 
+use Modules\Hangman\Config\HangmanData as HangmanData;
 
 use Modules\Hangman\libs\Hangman as HangmanLib;
 use Modules\Hangman\Mappers\Words as WordsMapper;
@@ -105,12 +106,10 @@ class Index extends \Ilch\Controller\Admin
         $this->getView()->set('entrie', $wordsModel);
         $this->getView()->set('hangmanLib', $hangmanLib);
         $this->getView()->set('localeList', $this->getTranslator()->getLocaleList());
-        $this->getView()->set('locale', $this->getTranslator()->getLocale());
 
         if ($this->getRequest()->isPost()) {
             $validator = [
                 'difficulty'    => 'required',
-                'locale'        => 'required',
                 'text'          => 'required|unique:'.$wordsMapper->tablename.',text',
             ];
 
@@ -157,7 +156,23 @@ class Index extends \Ilch\Controller\Admin
         header('Content-Type: application/json');
         $this->getLayout()->setFile('modules/hangman/layouts/iframe');
         $wordsMapper = new WordsMapper();
-        echo $wordsMapper->getJson();
+        $json = $wordsMapper->getJson();
+
+        if($this->getRequest()->getParam('save')) {
+            $wordsMapper->saveJsonFile($json);
+        }
+
+        echo $json;
+    }
+
+    public function importAction()
+    {
+        header('Content-Type: application/json');
+        $this->getLayout()->setFile('modules/hangman/layouts/iframe');
+        $hangmanData = new HangmanData();
+        $hangmanData->setDataWords([])->wordsData(true);
+
+        echo json_encode($hangmanData->getDataWords());
     }
 
     public function resetAction()

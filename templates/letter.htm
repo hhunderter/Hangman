@@ -1,0 +1,32 @@
+<div class="form-group row">
+    <div class="form-group">
+        <label for="letter" class="col-lg-2 control-label">
+            {_lang_letter}
+        </label>{EXPLODE}
+        <div class="col-lg-4">
+            <input class="form-control"
+                   type="text"
+                   id="letter"
+                   name="letter"
+                   size="2"
+                   maxlength="1"
+                   value="" />
+        </div>
+        <div class="col-lg-2">
+            <input type="submit" class="btn btn-default pull-right" name="submit" id="submit" value="{_lang_guess}" />
+        </div>
+        {EXPLODE}
+        <div class="col-lg-10" id="letter_div" name="letter_div">
+            <div  class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                {EXPLODE}
+                <div class="btn-group col-xs-12">
+                    {EXPLODE}
+                    <button type="submit" class="btn btn-default" id="letter" name="letter" value="{id}"{disabled}>{name}</button>
+                    {EXPLODE}
+                </div>
+                {EXPLODE}
+            </div>
+        </div>
+        {EXPLODE}
+    </div>
+</div>

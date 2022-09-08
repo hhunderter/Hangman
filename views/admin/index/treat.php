@@ -33,7 +33,8 @@
         </label>
         <div class="col-lg-8">
             <select class="form-control" id="locale" name="locale">
-            <?php foreach ($this->get('localeList') as $locale => $name): ?>
+                <option value="" <?=($this->originalInput('locale', ($entrie->getId()?$entrie->getLocale():''))) == '' ? 'selected=""' : '' ?>><?=$this->getTrans('all') ?></option>
+                <?php foreach ($this->get('localeList') as $locale => $name): ?>
                     <option value="<?=$locale ?>" <?=($this->originalInput('locale', ($entrie->getId()?$entrie->getLocale():$this->get('locale')))) == $locale ? 'selected=""' : '' ?>><?=$name ?></option>
             <?php endforeach; ?>
             </select>

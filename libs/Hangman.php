@@ -2,6 +2,8 @@
 
 namespace Modules\Hangman\Libs;
 
+use Modules\Hangman\Libs\Templates as TemplatesLib;
+
 use Modules\Hangman\Mappers\Game as GameMapper;
 use Modules\Hangman\Models\Game as GameModel;
 
@@ -10,14 +12,25 @@ use Modules\Hangman\Models\Words as WordsModel;
 
 use Modules\Hangman\Mappers\Highscore as HighscoreMapper;
 use Modules\Hangman\Models\Highscore as HighscoreModel;
+use Modules\User\Models\User;
 
 class Hangman {
+    /**
+     * @var string
+     */
+    var $url = '';
+
+    /**
+     * @var string
+     */
+    var $baseUrl = '';
+
     /**
      * @var \Ilch\Translator|null
      */
     var $translator = null;
     /**
-     * @var \Modules\User\Models\User|null
+     * @var User|null
      */
     var $user = null;
     /**
@@ -69,18 +82,54 @@ class Hangman {
     ];
 
     /**
-     * @return null|\Modules\User\Models\User
+     * @return string
      */
-    private function getUser(): ?\Modules\User\Models\User
+    private function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     * @return $this
+     */
+    private function setUrl(string $url): Hangman
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    private function getBaseUrl(): string
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * @param string $url
+     * @return $this
+     */
+    private function setBaseUrl(string $baseUrl): Hangman
+    {
+        $this->baseUrl = $baseUrl;
+        return $this;
+    }
+
+    /**
+     * @return null|User
+     */
+    private function getUser(): ?User
     {
         return $this->user;
     }
 
     /**
-     * @param null|\Modules\User\Models\User $User
+     * @param null|User $User
      * @return $this
      */
-    private function setUser(?\Modules\User\Models\User $User): Hangman
+    private function setUser(?User $User): Hangman
     {
         $this->user = $User;
         return $this;
@@ -129,7 +178,7 @@ class Hangman {
      * @param int|null $key
      * @return string|null
      */
-    private function getWordLetter(int $key = null): ?string
+    private function getWordLetter(?int $key = null): ?string
     {
         return $this->wordLetters[$key] ?? null;
     }
@@ -302,12 +351,14 @@ class Hangman {
 
     /**
      * @param \Ilch\Translator $translator
-     * @param \Modules\User\Models\User|null $User
+     * @param User|null $User
      */
-    public function __construct(\Ilch\Translator $translator, ?\Modules\User\Models\User $User)
+    public function __construct(\Ilch\Translator $translator, ?User $User)
     {
         $this->setUser($User)
-            ->setTranslator($translator);
+            ->setTranslator($translator)
+            ->setUrl(APPLICATION_PATH.'/modules/hangman')
+            ->setBaseUrl(BASE_URL.'/application/modules/hangman');
         $gameMapper = new GameMapper();
 
         $config = \Ilch\Registry::get('config');
@@ -355,7 +406,7 @@ class Hangman {
 
     /**
      * @param \Ilch\Request $request
-     * @return Hangman
+     * @return $this
      */
     public function playGame(\Ilch\Request $request): Hangman
     {
@@ -512,7 +563,7 @@ class Hangman {
     }
 
     /**
-     * @return Hangman
+     * @return $this
      */
     private function updateLastActivity(): Hangman
     {
@@ -523,7 +574,7 @@ class Hangman {
 
     /**
      * @param int $difficulty
-     * @return Hangman
+     * @return $this
      */
     private function changeDifficulty(int $difficulty = 1): Hangman
     {
@@ -563,40 +614,28 @@ class Hangman {
         if ($this->getLocked()) {
             return $this->getTranslator()->trans('loginfirst');
         }
-        $return = '<div class="form-group">
-            <div class="col-xs-6 grid">';
+
+        $tpl = new TemplatesLib($this->getTranslator(),'game', $this->getUrl().'/templates');
+        $return = $tpl->out(0, false);
         if (!$this->isOver()) { //while the game isn't over
-            $return .= '        <div class="col-xs-12 row" id="picture">'.$this->picture().'</div>
-                    <div class="col-xs-12 row" id="guess_word">' . $this->solvedWord() . '</div>
-                </div>
-                <div class="col-xs-6 grid">
-                '.$this->displayletter();
-
-            if (!empty($this->getGameModel()->getLetters())) {
-                $return .= '        <div id="guessed_letters" class="form-group col-lg-12 row">'.$this->getTranslator()->trans('lettersGuessed').': '.str_replace(',', ", ", $this->getGameModel()->getLetters()).'</div>';
-            }
-
-            //display the difficulty dropdown box
-            $return .= $this->displaydifficulty();
+            $return .= $tpl->set_ar_out(['picture' => $this->picture()], 2, false);
+            $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
+            $return .= $tpl->set_ar_out(['letter' => $this->displayletter(), 'guessed_letters' => ($this->getTranslator()->trans('lettersGuessed').': '.str_replace(',', ", ", $this->getGameModel()->getLetters())), 'difficulty' => $this->displaydifficulty()], 4, false);
         } else {
             if ($this->getGameModel()->getId()) {
                 //they've won the game
                 if ($this->getWon()) {
-                    $return .= $this->successMsg($this->getTranslator()->trans('gameWinMsg', $this->getGameModel()->getScore()));
+                    $return .= $tpl->set_ar_out(['msg' => $this->successMsg($this->getTranslator()->trans('gameWinMsg', $this->getGameModel()->getScore()))], 1, false);
                 } else if ($this->getGameModel()->getHealth() <= 0 || $this->getOver()) {
-                    $return .= $this->errorMsg($this->getTranslator()->trans('gameLosMsg', $this->getGameModel()->getScore())). '
-                        <div class="col-xs-12 row" id="picture">' . $this->picture($this->getGuesses()) . '</div>';
+                    $return .= $tpl->set_ar_out(['msg' => $this->errorMsg($this->getTranslator()->trans('gameLosMsg', $this->getGameModel()->getScore()))], 1, false);
+                    $return .= $tpl->set_ar_out(['picture' => $this->picture($this->getGuesses())], 2, false);
                 }
-                $return .= '<div class="col-xs-12 row" id="guess_word">' . $this->solvedWord() . '</div>';
+                $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
+            } else {
+                $return .= $tpl->set_ar_out(['guess_word' => ''], 3, false);
             }
-            $return .= '    </div>
-                <div class="col-xs-6">';
         }
-        $return .= '    </div>
-            <div class="col-xs-12">
-                <div><input type="submit" class="btn btn-default pull-right" name="newgame" value="'.$this->getTranslator()->trans('newGame').'" /></div>
-            </div>
-        </div>';
+        $return .= $tpl->out(5, false);
 
         if ($print) {
             echo $return;
@@ -609,53 +648,33 @@ class Hangman {
      */
     private function displayletter(): string
     {
+        $tpl = new TemplatesLib($this->getTranslator(),'letter', $this->getUrl().'/templates');
+        $return = $tpl->out(0, false);
         $config = \Ilch\Registry::get('config');
         if ($config->get('hangman_Letter_Btn') ?? false) {
             $div = 5;
             $rows = count($this->alphabet) / $div;
-            $return = '<div class="form-group row">
-<div class="form-group">
-<label for="letter_div" class="col-lg-2 control-label">
-    ' . $this->getTranslator()->trans('letter') . '
-</label>
-<div class="col-lg-10" id="letter_div" name="letter_div">
-<div  class="btn-group btn-group-sm" role="group" aria-label="Basic example">';
-for ($i = 0; $i < $rows; $i++) {
-    $return .= '<div class="btn-group col-xs-12">' . PHP_EOL;
-    for ($ii = 0; $ii < $div; $ii++) {
-        $id = $i * $div + $ii;
-        if (isset($this->alphabet[$id])) {
-            $letter = $this->alphabet[$id];
-            $return .= '<button type="submit" class="btn btn-default" id="letter" name="letter" value="' . $letter . '"'.(in_array($letter, explode(',', $this->getGameModel()->getLetters()) ?? []) ? ' disabled' : '').'>' . strtoupper($letter) . '</button>' . PHP_EOL;
-        }
-    }
-    $return .= '</div>' . PHP_EOL;
-}
-$return .= '</div>
-</div>
-</div>
-</div>';
-            return $return;
+
+            $return .= $tpl->out(2, false);
+
+            for ($i = 0; $i < $rows; $i++) {
+                $return .= $tpl->out(3, false);
+                for ($ii = 0; $ii < $div; $ii++) {
+                    $id = $i * $div + $ii;
+                    if (isset($this->alphabet[$id])) {
+                        $letter = $this->alphabet[$id];
+                        $return .= $tpl->set_ar_out(['id' => $letter, 'disabled' => (in_array($letter, explode(',', $this->getGameModel()->getLetters()) ?? []) ? ' disabled' : ''), 'name' => strtoupper($letter)], 4, false);
+                    }
+                }
+                $return .= $tpl->out(5, false);
+            }
+
+            $return .= $tpl->out(6, false);
         } else {
-            return '<div class="form-group row">
-                    <div class="form-group">
-                        <label for="letter" class="col-lg-2 control-label">
-                            ' . $this->getTranslator()->trans('letter') . '
-                        </label>
-                        <div class="col-lg-4">
-                            <input class="form-control"
-                                type="text"
-                                id="letter"
-                                name="letter"
-                                size="2"
-                                maxlength="1"
-                                value="" />
-                        </div>
-                        <div class="col-lg-2"><input type="submit" class="btn btn-default pull-right" name="submit" id="submit" value="' . $this->getTranslator()->trans('guess') . '" /></div>
-                        <div class="col-lg-4">&nbsp;</div>
-                    </div>
-                </div>';
+            $return .= $tpl->out(1, false);
         }
+        $return .= $tpl->out(7, false);
+        return $return;
     }
 
     /**
@@ -663,22 +682,12 @@ $return .= '</div>
      */
     private function displaydifficulty(): string
     {
-        $return = '<div class="form-group row">
-                        <div class="form-group">
-                            <label for="difficulty" class="col-lg-2 control-label">
-                                '.$this->getTranslator()->trans('difficulty').'
-                            </label>
-                            <div class="col-lg-4">
-                                <select name="difficulty" id="difficulty" class="form-control" />';
+        $tpl = new TemplatesLib($this->getTranslator(),'difficulty', $this->getUrl().'/templates');
+        $return = $tpl->out(0, false);
         foreach($this->getDifficultyTypes() ?? [] as $id => $name) {
-            $return .= '<option value="'.$id.'"'.($this->getGameModel()->getDifficulty() == $id ? '" selected="selected"' : '').'>'.$this->getTranslator()->trans($name).'</option>';
+            $return .= $tpl->set_ar_out(['id' => $id, 'selected' => ($this->getGameModel()->getDifficulty() == $id ? '" selected="selected"' : ''), 'name' => $this->getTranslator()->trans($name)], 1, false);
         }
-        $return .= '</select>
-                </div>
-                <div class="col-lg-2"><input type="submit" class="btn btn-default pull-right" name="change" id="change" value="'.$this->getTranslator()->trans('change').'" /></div>
-                <div class="col-lg-4">&nbsp;</div>
-            </div>
-        </div>';
+        $return .= $tpl->out(2, false);
         return $return;
     }
 
@@ -721,8 +730,8 @@ $return .= '</div>
             }
         }
 
-        if (file_exists(APPLICATION_PATH.'/modules/hangman/static/img/'.$count.'.jpg')) {
-            return '<img src="'.BASE_URL.'/application/modules/hangman/static/img/'.$count.'.jpg" alt="'.$this->getTranslator()->trans('hangman').'" title="'.$this->getTranslator()->trans('hangman').'">';
+        if (file_exists($this->getUrl().'/static/img/'.$count.'.jpg')) {
+            return '<img src="'.$this->getBaseUrl().'/static/img/'.$count.'.jpg" alt="'.$this->getTranslator()->trans('hangman').'" title="'.$this->getTranslator()->trans('hangman').'">';
         } else {
             return 'ERROR: '.$count.'.jpg is missing from the hangman images folder';
         }

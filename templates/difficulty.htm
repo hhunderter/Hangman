@@ -1,0 +1,17 @@
+<div class="form-group row">
+    <div class="form-group">
+        <label for="difficulty" class="col-lg-2 control-label">
+            {_lang_difficulty}
+        </label>
+        <div class="col-lg-4">
+            <select name="difficulty" id="difficulty" class="form-control" />
+            {EXPLODE}
+                <option value="{id}"{selected}>{name}</option>
+            {EXPLODE}
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <input type="submit" class="btn btn-default pull-right" name="change" id="change" value="{_lang_change}" />
+        </div>
+    </div>
+</div>

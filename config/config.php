@@ -15,7 +15,7 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.0.0',
+        'version' => '1.1.0',
         'icon_small' => 'fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
@@ -44,7 +44,7 @@ class Config extends \Ilch\Config\Install
         $this->db()->queryMulti($this->getInstallSql());
 
         $hangmanData = new HangmanData();
-        $hangmanData->getFillData();
+        $hangmanData->importData();
     }
 
     public function uninstall()
@@ -107,10 +107,17 @@ class Config extends \Ilch\Config\Install
     {
         switch ($installedVersion) {
             case "1.0.0":
-            // update zu 1.?.?
+            // update zu 1.1.0
                 /*
+                 Templates hinzugefügt
+                Daten Export erweitert
                 */
 
+                // no break
+            case "1.1.0":
+                // update zu 1.?.?
+                /*
+                */
         }
         return 'Update function executed.';
     }

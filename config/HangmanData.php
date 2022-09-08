@@ -61,23 +61,75 @@ class HangmanData
 
     ];
 
-    public function getFillData()
+    /**
+     * @return array
+     */
+    public function getDataWords(): array
     {
-        if (file_exists(dirname(__FILE__).'/dataWords.json')) {
-            $content = file_get_contents(dirname(__FILE__).'/dataWords.json');
-            if ($content) {
-                $this->dataWords = json_decode($content, true);
-            }
+        return $this->dataWords;
+    }
+
+    /**
+     * @param array $dataWords
+     * @return $this
+     */
+    public function setDataWords(array $dataWords): HangmanData
+    {
+        $this->dataWords = $dataWords;
+        return $this;
+    }
+
+    /**
+     * @param string $dataWord
+     * @param int|null $key
+     * @return $this
+     */
+    public function addDataWord(string $dataWord, ?int $key = null): HangmanData
+    {
+        if ($key) {
+            $this->dataWords[$key] = $dataWord;
+        } else {
+            $this->dataWords[] = $dataWord;
+        }
+        return $this;
+    }
+
+    /**
+     * @param bool $check
+     * @return $this
+     */
+    public function wordsData(bool $check = false): HangmanData
+    {
+        $wordsMapper = new WordsMapper();
+
+        $dataWords = $wordsMapper->loadJsonFile();
+        if ($dataWords) {
+            $this->setDataWords($dataWords);
         }
 
-        $wordsMapper = new WordsMapper();
-        foreach ($this->dataWords ?? [] as $entrie) {
+        foreach ($this->getDataWords() as $entrie) {
             $entryModel = new WordsModel();
 
             $entryModel->setByArray($entrie);
 
-            $wordsMapper->save($entryModel);
+            if ($check) {
+                if (!$wordsMapper->getEntryByText($entryModel)) {
+                    $wordsMapper->save($entryModel);
+                }
+            } else {
+                $wordsMapper->save($entryModel);
+            }
         }
+        return $this;
+    }
 
+    /**
+     * @param bool $check
+     * @return $this
+     */
+    public function importData(bool $check = false): HangmanData
+    {
+        $this->wordsData($check);
+        return $this;
     }
 }

@@ -16,6 +16,11 @@ class Words extends \Ilch\Mapper
     public $tablename = 'hangman_words';
 
     /**
+     * @var string
+     */
+    public $dataFile = APPLICATION_PATH.'/modules/hangman/config/dataWords.json';
+
+    /**
      * @return boolean
      */
     public function checkDB(): bool
@@ -96,13 +101,33 @@ class Words extends \Ilch\Mapper
      * @param int|EntriesModel $id
      * @return null|EntriesModel
      */
-    public function getEntryById(int $id): ?EntriesModel
+    public function getEntryById($id): ?EntriesModel
     {
         if (is_a($id, EntriesModel::class)) {
             $id = $id->getId();
         }
 
         $entrys = $this->getEntriesBy(['id' => (int)$id], []);
+
+        if (!empty($entrys)) {
+            return reset($entrys);
+        }
+
+        return null;
+    }
+
+
+    /**
+     * @param string|EntriesModel $text
+     * @return null|EntriesModel
+     */
+    public function getEntryByText($text): ?EntriesModel
+    {
+        if (is_a($text, EntriesModel::class)) {
+            $text = $text->getText();
+        }
+
+        $entrys = $this->getEntriesBy([new \Ilch\Database\Mysql\Expression\Comparison('LOWER (`text`)', '=', $this->db()->escape(strtolower($text), true))], []);
 
         if (!empty($entrys)) {
             return reset($entrys);
@@ -190,10 +215,11 @@ class Words extends \Ilch\Mapper
     }
 
     /**
+     * @param bool $save
      * @param int $options
      * @return string
      */
-    public function getJson(int $options = 0): string
+    public function getJson(bool $save = false, int $options = 0): string
     {
         $entryArray = $this->getEntriesBy();
         $entrys = [];
@@ -203,7 +229,64 @@ class Words extends \Ilch\Mapper
                 $entrys[] = $entryModel->getArray(false);
             }
         }
+        $json = json_encode($entrys, $options);
+
+        if ($save) {
+            $this->saveJsonFile($json);
+        }
         
-        return json_encode($entrys, $options);
+        return $json;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataFile(): string
+    {
+        return $this->dataFile;
+    }
+
+    /**
+     * @param string $dataFile
+     * @return $this
+     */
+    public function setDataFile(string $dataFile): Words
+    {
+        $this->dataFile = $dataFile;
+        return $this;
+    }
+
+    /**
+     * @param string|null $json
+     * @return bool
+     */
+    public function saveJsonFile(?string $json = null): bool
+    {
+        if (!$json) {
+            $json = $this->getJson();
+        }
+
+        if (file_exists($this->getDataFile())) {
+            removeDir($this->getDataFile());
+        }
+        return file_put_contents($this->getDataFile(), $json);
+    }
+
+    /**
+     * @return null|array
+     */
+    public function loadJsonFile(): ?array
+    {
+        $json = null;
+        if (file_exists($this->getDataFile())) {
+            $content = file_get_contents($this->getDataFile());
+            if ($content) {
+                $json = json_decode($content, true);
+                if (!$json) {
+                    $json = null;
+                }
+            }
+        }
+        return $json;
     }
 }
