@@ -56,19 +56,22 @@ class Settings extends \Ilch\Controller\Admin
                 $this->getConfig()->set('hangman_Guest_Allow', $this->getRequest()->getPost('Guest_Allow'));
                 $this->getConfig()->set('hangman_Days_Old_Del', $this->getRequest()->getPost('Days_Old_Del'));
                 $this->getConfig()->set('hangman_Letter_Btn', $this->getRequest()->getPost('Letter_Btn'));
+                $this->getConfig()->set('hangman_Color', $this->getRequest()->getPost('Color'));
 
-                $this->addMessage('saveSuccess');
-            } else {
-                $this->addMessage($validation->getErrorBag()->getErrorMessages(), 'danger', true);
                 $this->redirect()
-                    ->withInput()
-                    ->withErrors($validation->getErrorBag())
+                    ->withMessage('saveSuccess')
                     ->to(['action' => 'index']);
             }
+            $this->addMessage($validation->getErrorBag()->getErrorMessages(), 'danger', true);
+            $this->redirect()
+                ->withInput()
+                ->withErrors($validation->getErrorBag())
+                ->to(['action' => 'index']);
         }
 
         $this->getView()->set('Guest_Allow', $this->getConfig()->get('hangman_Guest_Allow'));
         $this->getView()->set('Days_Old_Del', $this->getConfig()->get('hangman_Days_Old_Del'));
         $this->getView()->set('Letter_Btn', $this->getConfig()->get('hangman_Letter_Btn'));
+        $this->getView()->set('Color', $this->getConfig()->get('hangman_Color'));
     }
 }

@@ -15,7 +15,7 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.1.0',
+        'version' => '1.2.0',
         'icon_small' => 'fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
@@ -39,7 +39,8 @@ class Config extends \Ilch\Config\Install
         $databaseConfig = new \Ilch\Config\Database($this->db());
         $databaseConfig->set('hangman_Guest_Allow', '0')
             ->set('hangman_Days_Old_Del', '30')
-            ->set('hangman_Letter_Btn', '1');
+            ->set('hangman_Letter_Btn', '1')
+            ->set('hangman_Color', '#000000');
         
         $this->db()->queryMulti($this->getInstallSql());
 
@@ -52,7 +53,8 @@ class Config extends \Ilch\Config\Install
         $databaseConfig = new \Ilch\Config\Database($this->db());
         $databaseConfig->delete('hangman_Guest_Allow')
             ->delete('hangman_Days_Old_Del')
-            ->delete('hangman_Letter_Btn');
+            ->delete('hangman_Letter_Btn')
+            ->delete('hangman_Color');
 
         $this->db()->drop('hangman_words', true);
         $this->db()->drop('hangman_game', true);
@@ -110,11 +112,18 @@ class Config extends \Ilch\Config\Install
             // update zu 1.1.0
                 /*
                  Templates hinzugefügt
-                Daten Export erweitert
+                 Daten Export erweitert
                 */
 
                 // no break
             case "1.1.0":
+                // update zu 1.2.0
+                /*
+                 Bilder ausgewechselt gegen ein Dynamisches
+                */
+                removeDir(APPLICATION_PATH.'/modules/hangman/static/');
+            // no break
+            case "1.2.0":
                 // update zu 1.?.?
                 /*
                 */

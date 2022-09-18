@@ -18,7 +18,7 @@ $hangmanLib = $this->get('hangmanLib');
     <div class="col-lg-12" id="hangman-form-container">
         <form method="POST">
             <?=$this->getTokenField() ?>
-            <?=$hangmanLib->displayGame(false) ?>
+            <?=$hangmanLib->displayGame($this, false) ?>
         </form>
     </div>
 </div>

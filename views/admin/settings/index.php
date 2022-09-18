@@ -46,5 +46,20 @@
             </div>
         </div>
     </div>
+
+    <div class="form-group <?=$this->validation()->hasError('Color') ? 'has-error' : '' ?>">
+        <label for="Color" class="col-lg-2 control-label">
+            <?=$this->getTrans('Color') ?>:
+        </label>
+        <div class="col-lg-4">
+            <input type="Color"
+                   class="form-control"
+                   id="Color"
+                   name="Color"
+                   min="1"
+                   value="<?=$this->escape($this->originalInput('Color', $this->get('Color'))) ?>"
+                   required />
+        </div>
+    </div>
     <?=$this->getSaveBar() ?>
 </form>

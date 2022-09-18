@@ -606,7 +606,7 @@ class Hangman {
      * @param bool $print
      * @return String
      */
-    public function displayGame(bool $print = true): string
+    public function displayGame(\Ilch\View $view, bool $print = true): string
     {
         if ($this->getDBfail()) {
             return '';
@@ -618,7 +618,7 @@ class Hangman {
         $tpl = new TemplatesLib($this->getTranslator(),'game', $this->getUrl().'/templates');
         $return = $tpl->out(0, false);
         if (!$this->isOver()) { //while the game isn't over
-            $return .= $tpl->set_ar_out(['picture' => $this->picture()], 2, false);
+            $return .= $tpl->set_ar_out(['picture' => $this->picture($view)], 2, false);
             $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
             $return .= $tpl->set_ar_out(['letter' => $this->displayletter(), 'guessed_letters' => ($this->getTranslator()->trans('lettersGuessed').': '.str_replace(',', ", ", $this->getGameModel()->getLetters())), 'difficulty' => $this->displaydifficulty()], 4, false);
         } else {
@@ -628,7 +628,7 @@ class Hangman {
                     $return .= $tpl->set_ar_out(['msg' => $this->successMsg($this->getTranslator()->trans('gameWinMsg', $this->getGameModel()->getScore()))], 1, false);
                 } else if ($this->getGameModel()->getHealth() <= 0 || $this->getOver()) {
                     $return .= $tpl->set_ar_out(['msg' => $this->errorMsg($this->getTranslator()->trans('gameLosMsg', $this->getGameModel()->getScore()))], 1, false);
-                    $return .= $tpl->set_ar_out(['picture' => $this->picture($this->getGuesses())], 2, false);
+                    $return .= $tpl->set_ar_out(['picture' => $this->picture($view, $this->getGuesses())], 2, false);
                 }
                 $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
             } else {
@@ -716,10 +716,11 @@ class Hangman {
     }
 
     /**
+     * @param \Ilch\View $view
      * @param int $count
      * @return String
      */
-    public function picture(int $count = 0): string
+    public function picture(\Ilch\View $view, int $count = 0): string
     {
         if (!$count) {
             for ($i = 100; $i >= 0; $i -= ceil(100 / $this->getGuesses())) {
@@ -730,11 +731,7 @@ class Hangman {
             }
         }
 
-        if (file_exists($this->getUrl().'/static/img/'.$count.'.jpg')) {
-            return '<img src="'.$this->getBaseUrl().'/static/img/'.$count.'.jpg" alt="'.$this->getTranslator()->trans('hangman').'" title="'.$this->getTranslator()->trans('hangman').'">';
-        } else {
-            return 'ERROR: '.$count.'.jpg is missing from the hangman images folder';
-        }
+        return '<img src="'.$view->getUrl(['action' => 'img', 'id' => $count]).'" alt="'.$this->getTranslator()->trans('hangman').'" title="'.$this->getTranslator()->trans('hangman').'">';
     }
 
     /**
