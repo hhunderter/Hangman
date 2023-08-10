@@ -1,80 +1,84 @@
 <?php
 
+/**
+ * @copyright Dennis Reilard alias hhunderter
+ * @package ilch
+ */
+
 namespace Modules\Hangman\Libs;
 
+use Ilch\View;
 use Modules\Hangman\Libs\Templates as TemplatesLib;
-
 use Modules\Hangman\Mappers\Game as GameMapper;
 use Modules\Hangman\Models\Game as GameModel;
-
 use Modules\Hangman\Mappers\Words as WordsMapper;
 use Modules\Hangman\Models\Words as WordsModel;
-
 use Modules\Hangman\Mappers\Highscore as HighscoreMapper;
 use Modules\Hangman\Models\Highscore as HighscoreModel;
 use Modules\User\Models\User;
 
-class Hangman {
+class Hangman
+{
     /**
      * @var string
      */
-    var $url = '';
+    public $url = '';
 
     /**
      * @var string
      */
-    var $baseUrl = '';
+    public $baseUrl = '';
 
     /**
      * @var \Ilch\Translator|null
      */
-    var $translator = null;
+    public $translator = null;
     /**
      * @var User|null
      */
-    var $user = null;
+    public $user = null;
     /**
      * @var GameModel|null
      */
-    var $gameModel = null;
+    public $gameModel = null;
 
     /**
      * @var array
      */
-    var $wordLetters = [];	//array - array of the letters in the word
+    public $wordLetters = [];   //array - array of the letters in the word
 
     /**
      * @var bool
      */
-    var $dbfail = false;		//bool - toggle game won
+    public $dbfail = false;     //bool - toggle game won
 
     /**
      * @var bool
      */
-    var $won = false;		//bool - toggle game won
+    public $won = false;        //bool - toggle game won
     /**
      * @var bool
      */
-    var $over = false;		//bool - toggle game over
+    public $over = false;       //bool - toggle game over
     /**
      * @var bool
      */
-    var $locked = false;		//bool - toggle game over
+    public $locked = false;     //bool - toggle game over
     /**
      * @var int
      */
-    var $guesses = 6;
+    public $guesses = 6;
     /**
      * @var bool
      */
-    var $gameChange = false;
+    public $gameChange = false;
 
-    var $difficultyTypes = [1 => 'easy',
+    public $difficultyTypes = [1 => 'easy',
         2 => 'medium',
         3 => 'hard',
     ];
 
-    var $alphabet = [		//array - all letters in the alphabet
+    public $alphabet = [        //array - all letters in the alphabet
         "a", "b", "c", "d", "e", "f", "g", "h",
         "i", "j", "k", "l", "m", "n", "o", "p",
         "q", "r", "s", "t", "u", "v", "w", "x",
@@ -108,7 +112,7 @@ class Hangman {
     }
 
     /**
-     * @param string $url
+     * @param string $baseUrl
      * @return $this
      */
     private function setBaseUrl(string $baseUrl): Hangman
@@ -233,7 +237,7 @@ class Hangman {
     }
 
     /**
-     * @param bool $won
+     * @param bool $dbfail
      * @return $this
      */
     private function setDBfail(bool $dbfail = true): Hangman
@@ -357,8 +361,8 @@ class Hangman {
     {
         $this->setUser($User)
             ->setTranslator($translator)
-            ->setUrl(APPLICATION_PATH.'/modules/hangman')
-            ->setBaseUrl(BASE_URL.'/application/modules/hangman');
+            ->setUrl(APPLICATION_PATH . '/modules/hangman')
+            ->setBaseUrl(BASE_URL . '/application/modules/hangman');
         $gameMapper = new GameMapper();
 
         $config = \Ilch\Registry::get('config');
@@ -453,14 +457,14 @@ class Hangman {
             //increase their score based on how many guesses they've used so far
             if ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 5))) {
                 $this->getGameModel()->addScore((5 * $multiplier));
-            } else if ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 4))) {
+            } elseif ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 4))) {
                 $this->getGameModel()->addScore((4 * $multiplier));
-            } else if ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 3))) {
+            } elseif ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 3))) {
                 $this->getGameModel()->addScore((3 * $multiplier));
-            } else if ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 2))) {
+            } elseif ($this->getGameModel()->getHealth() > (100 / ceil($this->getGuesses() / 2))) {
                 $this->getGameModel()->addScore((2 * $multiplier));
             } else {
-                $this->getGameModel()->addScore((1 * $multiplier));
+                $this->getGameModel()->addScore(($multiplier));
             }
         } else {//word doesn't contain the letter
             //reduce their health
@@ -473,7 +477,7 @@ class Hangman {
         $this->checkWin()
             ->checkOver();
 
-        if (($this->getWon() || $this->getOver() ) && $this->getGameModel()->getUserId()) {
+        if (($this->getWon() || $this->getOver()) && $this->getGameModel()->getUserId()) {
             $highscoreMapper = new HighscoreMapper();
 
             $highscoreModel = $highscoreMapper->getEntryByUserId($this->getGameModel()->getUserId());
@@ -498,7 +502,7 @@ class Hangman {
     private function checkWin(): Hangman
     {
         $found = 0;
-        for ($i = 0; $i <= $this->getCountWordLetters()-1; $i++) {
+        for ($i = 0; $i <= $this->getCountWordLetters() - 1; $i++) {
             foreach (explode(',', $this->getGameModel()->getLetters()) ?? [] as $letter) {
                 if ($letter == strtolower($this->getWordLetter($i))) {
                     $found++;
@@ -522,7 +526,7 @@ class Hangman {
     private function checkOver(): Hangman
     {
         $notFound = 0;
-        foreach(explode(',', $this->getGameModel()->getLetters()) ?? [] as $letter) {
+        foreach (explode(',', $this->getGameModel()->getLetters()) ?? [] as $letter) {
             if (!in_array($letter, $this->getWordLetters() ?? [])) {
                 $notFound++;
             }
@@ -588,7 +592,6 @@ class Hangman {
     }
 
     /**
-     * @param bool $print
      * @return $this
      */
     private function setNewWord(): Hangman
@@ -603,10 +606,11 @@ class Hangman {
     }
 
     /**
+     * @param View $view
      * @param bool $print
      * @return String
      */
-    public function displayGame(\Ilch\View $view, bool $print = true): string
+    public function displayGame(View $view, bool $print = true): string
     {
         if ($this->getDBfail()) {
             return '';
@@ -615,24 +619,24 @@ class Hangman {
             return $this->getTranslator()->trans('loginfirst');
         }
 
-        $tpl = new TemplatesLib($this->getTranslator(),'game', $this->getUrl().'/templates');
+        $tpl = new TemplatesLib($this->getTranslator(), 'game', $this->getUrl() . '/templates');
         $return = $tpl->out(0, false);
         if (!$this->isOver()) { //while the game isn't over
-            $return .= $tpl->set_ar_out(['picture' => $this->picture($view)], 2, false);
-            $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
-            $return .= $tpl->set_ar_out(['letter' => $this->displayletter(), 'guessed_letters' => ($this->getTranslator()->trans('lettersGuessed').': '.str_replace(',', ", ", $this->getGameModel()->getLetters())), 'difficulty' => $this->displaydifficulty()], 4, false);
+            $return .= $tpl->setArOut(['picture' => $this->picture($view)], 2, false);
+            $return .= $tpl->setArOut(['guess_word' => $this->solvedWord()], 3, false);
+            $return .= $tpl->setArOut(['letter' => $this->displayletter(), 'guessed_letters' => ($this->getTranslator()->trans('lettersGuessed') . ': ' . str_replace(',', ", ", $this->getGameModel()->getLetters())), 'difficulty' => $this->displaydifficulty()], 4, false);
         } else {
             if ($this->getGameModel()->getId()) {
                 //they've won the game
                 if ($this->getWon()) {
-                    $return .= $tpl->set_ar_out(['msg' => $this->successMsg($this->getTranslator()->trans('gameWinMsg', $this->getGameModel()->getScore()))], 1, false);
-                } else if ($this->getGameModel()->getHealth() <= 0 || $this->getOver()) {
-                    $return .= $tpl->set_ar_out(['msg' => $this->errorMsg($this->getTranslator()->trans('gameLosMsg', $this->getGameModel()->getScore()))], 1, false);
-                    $return .= $tpl->set_ar_out(['picture' => $this->picture($view, $this->getGuesses())], 2, false);
+                    $return .= $tpl->setArOut(['msg' => $this->successMsg($this->getTranslator()->trans('gameWinMsg', $this->getGameModel()->getScore()))], 1, false);
+                } elseif ($this->getGameModel()->getHealth() <= 0 || $this->getOver()) {
+                    $return .= $tpl->setArOut(['msg' => $this->errorMsg($this->getTranslator()->trans('gameLosMsg', $this->getGameModel()->getScore()))], 1, false);
+                    $return .= $tpl->setArOut(['picture' => $this->picture($view, $this->getGuesses())], 2, false);
                 }
-                $return .= $tpl->set_ar_out(['guess_word' => $this->solvedWord()], 3, false);
+                $return .= $tpl->setArOut(['guess_word' => $this->solvedWord()], 3, false);
             } else {
-                $return .= $tpl->set_ar_out(['guess_word' => ''], 3, false);
+                $return .= $tpl->setArOut(['guess_word' => ''], 3, false);
             }
         }
         $return .= $tpl->out(5, false);
@@ -648,7 +652,7 @@ class Hangman {
      */
     private function displayletter(): string
     {
-        $tpl = new TemplatesLib($this->getTranslator(),'letter', $this->getUrl().'/templates');
+        $tpl = new TemplatesLib($this->getTranslator(), 'letter', $this->getUrl() . '/templates');
         $return = $tpl->out(0, false);
         $config = \Ilch\Registry::get('config');
         if ($config->get('hangman_Letter_Btn') ?? false) {
@@ -663,7 +667,7 @@ class Hangman {
                     $id = $i * $div + $ii;
                     if (isset($this->alphabet[$id])) {
                         $letter = $this->alphabet[$id];
-                        $return .= $tpl->set_ar_out(['id' => $letter, 'disabled' => (in_array($letter, explode(',', $this->getGameModel()->getLetters()) ?? []) ? ' disabled' : ''), 'name' => strtoupper($letter)], 4, false);
+                        $return .= $tpl->setArOut(['id' => $letter, 'disabled' => (in_array($letter, explode(',', $this->getGameModel()->getLetters()) ?? []) ? ' disabled' : ''), 'name' => strtoupper($letter)], 4, false);
                     }
                 }
                 $return .= $tpl->out(5, false);
@@ -682,10 +686,10 @@ class Hangman {
      */
     private function displaydifficulty(): string
     {
-        $tpl = new TemplatesLib($this->getTranslator(),'difficulty', $this->getUrl().'/templates');
+        $tpl = new TemplatesLib($this->getTranslator(), 'difficulty', $this->getUrl() . '/templates');
         $return = $tpl->out(0, false);
-        foreach($this->getDifficultyTypes() ?? [] as $id => $name) {
-            $return .= $tpl->set_ar_out(['id' => $id, 'selected' => ($this->getGameModel()->getDifficulty() == $id ? '" selected="selected"' : ''), 'name' => $this->getTranslator()->trans($name)], 1, false);
+        foreach ($this->getDifficultyTypes() ?? [] as $id => $name) {
+            $return .= $tpl->setArOut(['id' => $id, 'selected' => ($this->getGameModel()->getDifficulty() == $id ? '" selected="selected"' : ''), 'name' => $this->getTranslator()->trans($name)], 1, false);
         }
         $return .= $tpl->out(2, false);
         return $return;
@@ -716,11 +720,11 @@ class Hangman {
     }
 
     /**
-     * @param \Ilch\View $view
+     * @param View $view
      * @param int $count
      * @return String
      */
-    public function picture(\Ilch\View $view, int $count = 0): string
+    public function picture(View $view, int $count = 0): string
     {
         if (!$count) {
             for ($i = 100; $i >= 0; $i -= ceil(100 / $this->getGuesses())) {
@@ -731,7 +735,7 @@ class Hangman {
             }
         }
 
-        return '<img src="'.$view->getUrl(['action' => 'img', 'id' => $count]).'" alt="'.$this->getTranslator()->trans('hangman').'" title="'.$this->getTranslator()->trans('hangman').'">';
+        return '<img src="' . $view->getUrl(['action' => 'img', 'id' => $count]) . '" alt="' . $this->getTranslator()->trans('hangman') . '" title="' . $this->getTranslator()->trans('hangman') . '">';
     }
 
     /**
@@ -759,7 +763,7 @@ class Hangman {
      */
     private function msg(string $msg, string $type = 'success'): string
     {
-        return '<div class="alert alert-'.$type.' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'.$msg.'</div>';
+        return '<div class="alert alert-' . $type . ' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' . $msg . '</div>';
     }
 
     /**
@@ -769,10 +773,10 @@ class Hangman {
     {
         $result = "";
 
-        for ($i = 0; $i <= $this->getCountWordLetters()-1; $i++) {
+        for ($i = 0; $i <= $this->getCountWordLetters() - 1; $i++) {
             $found = false;
 
-            foreach(explode(',', $this->getGameModel()->getLetters()) ?? [] as $letter) {
+            foreach (explode(',', $this->getGameModel()->getLetters()) ?? [] as $letter) {
                 if ($letter == strtolower($this->getWordLetter($i))) {
                     $result .= $this->getWordLetter($i); //they've guessed this letter
                     $found = true;
@@ -781,7 +785,7 @@ class Hangman {
 
             if (!$found && $this->isLetter($this->getWordLetter($i))) {
                 $result .= "&nbsp;_&nbsp;"; //they haven't guessed this letter
-            } else if (!$found) { //this is a space or non-alpha character
+            } elseif (!$found) { //this is a space or non-alpha character
                 //make spaces more noticable
                 if ($this->getWordLetter($i) == " ") {
                     $result .= "&nbsp;&nbsp;&nbsp;";
@@ -810,8 +814,8 @@ class Hangman {
      */
     public function gettext(): string
     {
-        $configClass = '\\Modules\\'.ucfirst('Hangman').'\\Config\\Config';
+        $configClass = '\\Modules\\' . ucfirst('Hangman') . '\\Config\\Config';
         $config = new $configClass();
-        return " -> &copy; by Dennis Reilard alias hhunderter (Version: ".$config->config['version'].")";
+        return " -> &copy; by Dennis Reilard alias hhunderter (Version: " . $config->config['version'] . ")";
     }
 }

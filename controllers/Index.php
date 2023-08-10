@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -28,7 +29,7 @@ class Index extends \Ilch\Controller\Frontend
                 ->to(['action' => 'index']);
         }
 
-        $this->getView()->set('gettext', (!empty($this->getRequest()->getParam('copy'))?$hangmanLib->gettext():''));
+        $this->getView()->set('gettext', (!empty($this->getRequest()->getParam('copy')) ? $hangmanLib->gettext() : ''));
     }
 
     public function highscoreAction()
@@ -94,21 +95,27 @@ class Index extends \Ilch\Controller\Frontend
 
                 //Arm Links
                 imageline($img, 72.5, 150, 72.5 - 50, 120, $black);
+            // no break
             case 5:
                 //Arm Rechts
                 imageline($img, 72.5, 150, 72.5 + 60, 120, $black);
+            // no break
             case 4:
                 //Bein Rechts
                 imageline($img, 72.5, 200, 72.5 + 40, 280, $black);
+            // no break
             case 3:
                 //Bein Links
                 imageline($img, 72.5, 200, 72.5 - 40, 280, $black);
+            // no break
             case 2:
                 //Körper
                 imageline($img, 72.5, 200, 72.5, 59 + 61, $black);
+            // no break
             case 1:
                 //Kopf
                 imageellipse($img, 72.5, 59 + 61 / 2, 61, 61, $black);
+            // no break
             case 0:
         }
 

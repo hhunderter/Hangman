@@ -1,8 +1,12 @@
 <?php
+
+/** @var \Ilch\View $this */
+
+/** @var Modules\Hangman\Libs\Hangman $hangmanLib */
 $hangmanLib = $this->get('hangmanLib');
 ?>
 <h1>
-    <?=$this->getTrans('hangman').$this->get('gettext') ?>
+    <?=$this->getTrans('hangman') . $this->get('gettext') ?>
 </h1>
 <div class="form-group">
     <ul class="nav nav-tabs">

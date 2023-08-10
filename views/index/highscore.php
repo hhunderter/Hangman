@@ -1,3 +1,13 @@
+<?php
+
+/** @var \Ilch\View $this */
+
+/** @var Modules\User\Mappers\User $userMapper */
+$userMapper = $this->get('userMapper');
+
+/** @var Modules\Hangman\Models\Highscore $entries */
+$entries = $this->get('entries');
+?>
 <h1>
     <?=$this->getTrans('hangman') ?>
 </h1>
@@ -13,7 +23,8 @@
 </div>
 <div class="teams" id="hangman-container">
     <div class="col-lg-12" id="hangman-form-container">
-        <?php if ($this->get('entries')) {
+        <?php
+        if ($entries) {
             ?>
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
@@ -29,9 +40,9 @@
                         <th><?=$this->getTrans('games') ?></th>
                     </tr>
                     </thead>
-                    <?php foreach ($this->get('entries') ?? [] as $entry) {
-                        $user = $this->get('userMapper')->getUserById($entry->getUserId());
-                        ?>
+                    <?php
+                    foreach ($entries ?? [] as $entry) {
+                        $user = $this->get('userMapper')->getUserById($entry->getUserId()); ?>
                         <tbody>
                         <tr>
                             <td><?=$this->escape($user->getName()) ?></td>
@@ -52,6 +63,5 @@
             <?php
         }
         ?>
-
     </div>
 </div>

@@ -1,3 +1,7 @@
+<?php
+
+/** @var \Ilch\View $this */
+?>
 <h1><?=$this->getTrans('settings') ?></h1>
 <form class="form-horizontal" method="POST" action="">
     <?=$this->getTokenField() ?>
@@ -8,9 +12,9 @@
         </label>
         <div class="col-lg-4">
             <div class="flipswitch">
-                <input type="radio" class="flipswitch-input" id="Guest_Allow-yes" name="Guest_Allow" value="1" <?=($this->originalInput('Guest_Allow', $this->get('Guest_Allow')))?'checked="checked"':'' ?> />
+                <input type="radio" class="flipswitch-input" id="Guest_Allow-yes" name="Guest_Allow" value="1" <?=($this->originalInput('Guest_Allow', $this->get('Guest_Allow'))) ? 'checked="checked"' : '' ?> />
                 <label for="Guest_Allow-yes" class="flipswitch-label flipswitch-label-on"><?=$this->getTrans('on') ?></label>
-                <input type="radio" class="flipswitch-input" id="Guest_Allow-no" name="Guest_Allow" value="0"  <?=(!$this->originalInput('Guest_Allow', $this->get('Guest_Allow')))?'checked="checked"':'' ?> />
+                <input type="radio" class="flipswitch-input" id="Guest_Allow-no" name="Guest_Allow" value="0"  <?=(!$this->originalInput('Guest_Allow', $this->get('Guest_Allow'))) ? 'checked="checked"' : '' ?> />
                 <label for="Guest_Allow-no" class="flipswitch-label flipswitch-label-off"><?=$this->getTrans('off') ?></label>
                 <span class="flipswitch-selection"></span>
             </div>
@@ -38,9 +42,9 @@
         </label>
         <div class="col-lg-4">
             <div class="flipswitch">
-                <input type="radio" class="flipswitch-input" id="Letter_Btn-yes" name="Letter_Btn" value="1" <?=($this->originalInput('Letter_Btn', $this->get('Letter_Btn')))?'checked="checked"':'' ?> />
+                <input type="radio" class="flipswitch-input" id="Letter_Btn-yes" name="Letter_Btn" value="1" <?=($this->originalInput('Letter_Btn', $this->get('Letter_Btn'))) ? 'checked="checked"' : '' ?> />
                 <label for="Letter_Btn-yes" class="flipswitch-label flipswitch-label-on"><?=$this->getTrans('on') ?></label>
-                <input type="radio" class="flipswitch-input" id="Letter_Btn-no" name="Letter_Btn" value="0"  <?=(!$this->originalInput('Letter_Btn', $this->get('Letter_Btn')))?'checked="checked"':'' ?> />
+                <input type="radio" class="flipswitch-input" id="Letter_Btn-no" name="Letter_Btn" value="0"  <?=(!$this->originalInput('Letter_Btn', $this->get('Letter_Btn'))) ? 'checked="checked"' : '' ?> />
                 <label for="Letter_Btn-no" class="flipswitch-label flipswitch-label-off"><?=$this->getTrans('off') ?></label>
                 <span class="flipswitch-selection"></span>
             </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -7,12 +8,10 @@
 namespace Modules\Hangman\Controllers\Admin;
 
 use Modules\Hangman\Config\HangmanData as HangmanData;
-
 use Modules\Hangman\libs\Hangman as HangmanLib;
 use Modules\Hangman\Mappers\Words as WordsMapper;
 use Modules\Hangman\Models\Words as WordsModel;
 use Modules\Hangman\Mappers\Highscore as HighscoreMapper;
-
 use Ilch\Validation;
 
 class Index extends \Ilch\Controller\Admin
@@ -23,25 +22,25 @@ class Index extends \Ilch\Controller\Admin
             [
                 'name' => 'manage',
                 'active' => false,
-                'icon' => 'fas fa-th-list',
+                'icon' => 'fa-solid fa-table-list',
                 'url' => $this->getLayout()->getUrl(['controller' => 'index', 'action' => 'index']),
                 [
                     'name' => 'treat',
                     'active' => false,
-                    'icon' => 'fa fa-plus-circle',
+                    'icon' => 'fa-solid fa-circle-plus',
                     'url' => $this->getLayout()->getUrl(['controller' => 'index', 'action' => 'treat'])
                 ]
             ],
             [
                 'name' => 'reset',
                 'active' => false,
-                'icon' => 'fas fa-trash-alt',
+                'icon' => 'fa-solid fa-trash-can',
                 'url' => $this->getLayout()->getUrl(['controller' => 'index', 'action' => 'reset'])
             ],
             [
                 'name' => 'settings',
                 'active' => false,
-                'icon' => 'fas fa-cogs',
+                'icon' => 'fa-solid fa-gears',
                 'url' => $this->getLayout()->getUrl(['controller' => 'settings', 'action' => 'index'])
             ]
         ];
@@ -110,7 +109,7 @@ class Index extends \Ilch\Controller\Admin
         if ($this->getRequest()->isPost()) {
             $validator = [
                 'difficulty'    => 'required',
-                'text'          => 'required|unique:'.$wordsMapper->tablename.',text',
+                'text'          => 'required|unique:' . $wordsMapper->tablename . ',text',
             ];
 
             if ($wordsModel->getId()) {
@@ -158,7 +157,7 @@ class Index extends \Ilch\Controller\Admin
         $wordsMapper = new WordsMapper();
         $json = $wordsMapper->getJson();
 
-        if($this->getRequest()->getParam('save')) {
+        if ($this->getRequest()->getParam('save')) {
             $wordsMapper->saveJsonFile($json);
         }
 
@@ -188,6 +187,5 @@ class Index extends \Ilch\Controller\Admin
             $this->addMessage('resetSuccess');
             $this->redirect(['action' => 'index']);
         }
-
     }
 }

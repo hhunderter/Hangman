@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -17,7 +18,7 @@ class Words extends \Ilch\Model
      * @var string
      */
     protected $text = '';
-    
+
     /**
      * @var int
      */
@@ -120,7 +121,7 @@ class Words extends \Ilch\Model
         $this->locale = $locale;
         return $this;
     }
-    
+
     /**
      * Gets the Array of Model.
      *

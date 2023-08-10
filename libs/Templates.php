@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @copyright Dennis Reilard alias hhunderter
+ * @package ilch
+ */
+
 namespace Modules\Hangman\Libs;
 
 class Templates
@@ -163,7 +168,7 @@ class Templates
     }
 
     /**
-     * @param array $keys
+     * @param array $Lists
      * @return $this
      */
     private function setLists(array $Lists): Templates
@@ -233,42 +238,42 @@ class Templates
         $this->setUrl($ort);
 
         // file bearbeiten, weil file auch ohne .htm angegeben werden kann.
-        if (($this->getUrl() !== 'FILE') AND (substr ($file, -4) != '.htm')) {
+        if (($this->getUrl() !== 'FILE') and (substr($file, -4) != '.htm')) {
             $file .= '.htm';
         }
         $inhalt = '';
 
         if ($this->getUrl() === 'FILE') {
             $inhalt = $file;
-        } elseif ($this->getUrl()){
-            $file = $this->getUrl().'/'.$file;
+        } elseif ($this->getUrl()) {
+            $file = $this->getUrl() . '/' . $file;
         }
 
         if ($this->getUrl() !== 'FILE') {
             $inhalt = file_get_contents($file);
         }
 
-        $inhalt = $this->replace_lang($inhalt);
+        $inhalt = $this->replaceLang($inhalt);
 
-        $inhalt = $this->replace_list($inhalt);
-        $this->setParts(explode ('{EXPLODE}', $inhalt) ?? []);
+        $inhalt = $this->replaceList($inhalt);
+        $this->setParts(explode('{EXPLODE}', $inhalt) ?? []);
     }
 
     /**
      * @param null|array|numeric $parts
      * @return bool
      */
-    public function remove_parts($parts = null): bool
+    public function removeParts($parts = null): bool
     {
         if (!is_null($parts)) {
             if (is_array($parts)) {
-                foreach($parts as $key) {
+                foreach ($parts as $key) {
                     if (is_numeric($key)) {
                         $this->addPart('', $key);
                     }
                 }
                 return true;
-            }else{
+            } else {
                 if (is_numeric($parts)) {
                     $this->addPart('', $parts);
                     return true;
@@ -282,10 +287,10 @@ class Templates
      * @param string $var
      * @return string
      */
-    private function replace_lang (string $var): string
+    private function replaceLang(string $var): string
     {
         $lang_zwischenspeicher = [];
-        preg_match_all ("/\{_lang_([^\{\}]+)\}/" , $var , $lang_zwischenspeicher);
+        preg_match_all("/\{_lang_([^{}]+)}/", $var, $lang_zwischenspeicher);
         foreach ($lang_zwischenspeicher[1] as $v) {
             $var = str_replace('{_lang_' . $v . '}', $this->getTranslator()->trans($v), $var);
         }
@@ -296,12 +301,12 @@ class Templates
      * @param string $var
      * @return string
      */
-    private function replace_list (string $var): string
+    private function replaceList(string $var): string
     {
         $zwischenspeicher = [];
-        preg_match_all ("/\{_list_([^\{\}]+)\}/" , $var , $zwischenspeicher);
+        preg_match_all("/\{_list_([^{}]+)}/", $var, $zwischenspeicher);
         foreach ($zwischenspeicher[1] as $v) {
-            list ($key , $val) = explode('@', $v);
+            list($key, $val) = explode('@', $v);
             $this->addList($val, $key);
             $var = str_replace('{_list_' . $v . '}', '{' . $key . '}', $var);
         }
@@ -313,7 +318,7 @@ class Templates
      * @param array $ar
      * @return string
      */
-    public function list_get (string $key , array $ar): string
+    public function listGet(string $key, array $ar): string
     {
         $zwischenspeicher = $this->getList($key);
         krsort($ar);
@@ -329,14 +334,14 @@ class Templates
      * @param array $ar
      * @return $this
      */
-    public function list_set_ar(string $key, array $ar): Templates
+    public function listSetAr(string $key, array $ar): Templates
     {
         $listString = '';
         foreach ($ar as $listEntry) {
             if (!is_array($listEntry)) {
                 $listEntry = array($listEntry);
             }
-            $listString .= $this->list_get($key, $listEntry);
+            $listString .= $this->listGet($key, $listEntry);
         }
         $this->set($key, $listString);
         return $this;
@@ -344,9 +349,9 @@ class Templates
 
     /**
      * @param string $key
-     * @param array $ar
+     * @return bool
      */
-    public function list_exists (string $key): bool
+    public function listExists(string $key): bool
     {
         return (bool)$this->getList($key);
     }
@@ -354,11 +359,12 @@ class Templates
     /**
      * @param string $key
      * @param array $ar
+     * @param bool $print
      * @return string
      */
-    public function list_out (string $key , array $ar, bool $print = true): string
+    public function listOut(string $key, array $ar, bool $print = true): string
     {
-        $return = $this->list_get ($key , $ar);
+        $return = $this->listGet($key, $ar);
         if ($print) {
             echo $return;
         }
@@ -370,7 +376,7 @@ class Templates
      * @param string $v
      * @return $this
      */
-    public function set (string $k , string $v): Templates
+    public function set(string $k, string $v): Templates
     {
         $this->addKey($v, $k);
         return $this;
@@ -380,10 +386,10 @@ class Templates
      * @param array $ar
      * @return $this
      */
-    public function set_ar (array $ar): Templates
+    public function setAr(array $ar): Templates
     {
         foreach ($ar as $k => $v) {
-            $this->set($k , $v);
+            $this->set($k, $v);
         }
         return $this;
     }
@@ -394,9 +400,9 @@ class Templates
      * @param bool $print
      * @return string
      */
-    public function set_ar_out (array $ar , int $pos, bool $print = true): string
+    public function setArOut(array $ar, int $pos, bool $print = true): string
     {
-        $this->set_ar($ar);
+        $this->setAr($ar);
         $return = $this->out($pos, false);
         if ($print) {
             echo $return;
@@ -404,9 +410,9 @@ class Templates
         return $return;
     }
 
-    public function set_out ($k , $v , int $pos, bool $print = true): string
+    public function setOut($k, $v, int $pos, bool $print = true): string
     {
-        $this->set($k , $v);
+        $this->set($k, $v);
         $return = $this->out($pos, false);
         if ($print) {
             echo $return;
@@ -414,9 +420,9 @@ class Templates
         return $return;
     }
 
-    public function set_ar_get (array $ar , int $pos): string
+    public function setArGet(array $ar, int $pos): string
     {
-        $this->set_ar($ar);
+        $this->setAr($ar);
         return ($this->get($pos));
     }
 
@@ -426,9 +432,9 @@ class Templates
      * @param int $pos
      * @return string
      */
-    public function set_get (string $k , string $v , int $pos): string
+    public function setGet(string $k, string $v, int $pos): string
     {
-        $this->set($k , $v);
+        $this->set($k, $v);
         return ($this->get($pos));
     }
 
@@ -436,7 +442,7 @@ class Templates
      * @param string $k
      * @return bool
      */
-    public function del (string $k): bool
+    public function del(string $k): bool
     {
         if ($this->getKey($k)) {
             $this->delKey($k);
@@ -450,7 +456,7 @@ class Templates
      * @param array $ar
      * @return bool
      */
-    public function del_ar (array $ar): bool
+    public function delAr(array $ar): bool
     {
         foreach ($ar as $k => $v) {
             $this->del($k);
@@ -462,25 +468,25 @@ class Templates
      * @param array $tr
      * @return string
      */
-    private function parse_if_do (array $tr): string
+    private function parseIfDo(array $tr): string
     {
         if ($tr[1] == 'SESSION_USERID') {
             $this->addKey($_SESSION['user_id'], $tr[1]);
         }
         $tr1 = $this->getKey($tr[1]);
-        if ($tr1
-            AND (
-                ($tr[2] == '==' AND $tr1 == $tr[3])
-                OR (($tr[2] == '!=' OR $tr[2] == '<>') AND $tr1 != $tr[3])
-                OR ($tr[2] == '<=' AND $tr1 <= $tr[3])
-                OR ($tr[2] == '>=' AND $tr1 >= $tr[3])
-                OR ($tr[2] == '<' AND $tr1 < $tr[3])
-                OR ($tr[2] == '>' AND $tr1 > $tr[3])
+        if (
+            $tr1
+            and (
+                ($tr[2] == '==' and $tr1 == $tr[3])
+                or (($tr[2] == '!=' or $tr[2] == '<>') and $tr1 != $tr[3])
+                or ($tr[2] == '<=' and $tr1 <= $tr[3])
+                or ($tr[2] == '>=' and $tr1 >= $tr[3])
+                or ($tr[2] == '<' and $tr1 < $tr[3])
+                or ($tr[2] == '>' and $tr1 > $tr[3])
             )
-
         ) {
             return ($tr[4]);
-        } elseif ($tr1 AND isset($tr[6])) {
+        } elseif ($tr1 and isset($tr[6])) {
             return ($tr[6]);
         }
         return ('');
@@ -490,11 +496,11 @@ class Templates
      * @param int $pos
      * @return string
      */
-    private function parse_if (int $pos): string
+    private function parseIf(int $pos): string
     {
         $toout = $this->getPart($pos);
 
-        $toout = preg_replace_callback ("/\{_if_\{([^\}]+)\}(==|!=|<>|<|>|<=|>=)'([^']*)'\}(.*)(\{_else_\}(.*))?\{\/_endif\}/Us", array($this, 'parse_if_do') , $toout);
+        $toout = preg_replace_callback("#\{_if_\{([^}]+)}(==|!=|<>|<|>|<=|>=)'([^']*)'}(.*)(\{_else_}(.*))?\{/_endif}#Us", array($this, 'parseIfDo'), $toout);
 
         return ($toout);
     }
@@ -503,9 +509,9 @@ class Templates
      * @param int $pos
      * @return string
      */
-    public function get (int $pos): string
+    public function get(int $pos): string
     {
-        $toout = $this->parse_if($pos);
+        $toout = $this->parseIf($pos);
 
         mt_srand((double)microtime() * 1000000);
         $z = '##@@' . mt_rand() . '@@##';
@@ -514,8 +520,8 @@ class Templates
             $toout = str_replace('{' . $k . '}', '{' . $z . $k . '}', $toout);
         }
 
-        foreach ($this->getKeys()  as $k => $v) {
-            $toout = str_replace('{' . $z . $k . '}' , $v , $toout);
+        foreach ($this->getKeys() as $k => $v) {
+            $toout = str_replace('{' . $z . $k . '}', $v, $toout);
         }
         return $toout;
     }
@@ -525,7 +531,7 @@ class Templates
      * @param bool $print
      * @return string
      */
-    public function out (int $pos, bool $print = true): string
+    public function out(int $pos, bool $print = true): string
     {
         $return = $this->get($pos);
         if ($print) {

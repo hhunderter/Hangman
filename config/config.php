@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -15,8 +16,8 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.2.0',
-        'icon_small' => 'fa-list-ol',
+        'version' => '1.2.1',
+        'icon_small' => 'fa-solid fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
         'official' => false,
@@ -31,7 +32,7 @@ class Config extends \Ilch\Config\Install
             ],
         ],
         'ilchCore' => '2.1.43',
-        'phpVersion' => '7.4',
+        'phpVersion' => '7.3',
     ];
 
     public function install()
@@ -41,7 +42,7 @@ class Config extends \Ilch\Config\Install
             ->set('hangman_Days_Old_Del', '30')
             ->set('hangman_Letter_Btn', '1')
             ->set('hangman_Color', '#000000');
-        
+
         $this->db()->queryMulti($this->getInstallSql());
 
         $hangmanData = new HangmanData();
@@ -121,9 +122,18 @@ class Config extends \Ilch\Config\Install
                 /*
                  Bilder ausgewechselt gegen ein Dynamisches
                 */
-                removeDir(APPLICATION_PATH.'/modules/hangman/static/');
+                removeDir(APPLICATION_PATH . '/modules/hangman/static/');
             // no break
             case "1.2.0":
+                // update zu 1.2.1
+                /*
+                 * PHP-Version Anpassung
+                 * FontAwesome 6
+                 * Code Verbesserungen
+                */
+                $this->db()->update('modules')->values(['icon_small' => $this->config['icon_small']])->where(['key' => $this->config['key']])->execute();
+            // no break
+            case "1.2.1":
                 // update zu 1.?.?
                 /*
                 */

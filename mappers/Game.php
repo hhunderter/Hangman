@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -46,20 +47,20 @@ class Game extends \Ilch\Mapper
             $result = $select->execute();
         }
 
-        $entryArray = $result->fetchRows();
-        if (empty($entryArray)) {
+        $entriesArray = $result->fetchRows();
+        if (empty($entriesArray)) {
             return null;
         }
-        $entrys = [];
+        $entries = [];
 
-        foreach ($entryArray as $entries) {
+        foreach ($entriesArray as $entryArray) {
             $entryModel = new EntriesModel();
 
-            $entryModel->setByArray($entries);
+            $entryModel->setByArray($entryArray);
 
-            $entrys[] = $entryModel;
+            $entries[] = $entryModel;
         }
-        return $entrys;
+        return $entries;
     }
 
     /**
@@ -71,7 +72,7 @@ class Game extends \Ilch\Mapper
     {
         return $this->getEntriesBy($where, ['id' => 'ASC'], $pagination);
     }
-    
+
     /**
      * @param \Ilch\Pagination|null $pagination
      * @return null|array
@@ -91,10 +92,10 @@ class Game extends \Ilch\Mapper
             $id = $id->getId();
         }
 
-        $entrys = $this->getEntriesBy(['id' => (int)$id], []);
+        $entries = $this->getEntriesBy(['id' => (int)$id], []);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -112,7 +113,7 @@ class Game extends \Ilch\Mapper
         }
 
         $oldsession = session_id();
-        if ($oldsession = $this->getGameCookie()) {
+        if ($oldsession == $this->getGameCookie()) {
             if ($oldsession != session_id()) {
                 $this->setGameCookie(session_id());
             }
@@ -138,7 +139,7 @@ class Game extends \Ilch\Mapper
      * @param String $sessionid
      * @return $this
      */
-    public function setGameCookie(String $sessionid): Game
+    public function setGameCookie(string $sessionid): Game
     {
         setcookieIlch('hangman_game', $sessionid, strtotime('+1 days'));
         return $this;
@@ -167,7 +168,7 @@ class Game extends \Ilch\Mapper
                 ->execute();
             $result = $model->getId();
         } else {
-            $result = (int)$this->db()->insert($this->tablename)
+            $result = $this->db()->insert($this->tablename)
                 ->values($fields)
                 ->execute();
         }
@@ -191,13 +192,13 @@ class Game extends \Ilch\Mapper
     }
 
     /**
-     * @param int|EntriesModel $id
+     * @param int $days
      * @return boolean
      */
     public function deleteByDays(int $days): bool
     {
         $date = new \Ilch\Date();
-        $date->modify('-'.$days.' Days');
+        $date->modify('-' . $days . ' Days');
 
         return $this->db()->delete($this->tablename)
             ->where(['last_activity <' => $date->format("Y-m-d H:i:s", true)])
@@ -210,15 +211,15 @@ class Game extends \Ilch\Mapper
      */
     public function getJson(int $options = 0): string
     {
-        $entryArray = $this->getEntriesBy();
-        $entrys = [];
+        $entriesArray = $this->getEntriesBy();
+        $entries = [];
 
-        if ($entryArray) {
-            foreach ($entryArray as $entryModel) {
-                $entrys[] = $entryModel->getArray(false);
+        if ($entriesArray) {
+            foreach ($entriesArray as $entryModel) {
+                $entries[] = $entryModel->getArray(false);
             }
         }
-        
-        return json_encode($entrys, $options);
+
+        return json_encode($entries, $options);
     }
 }

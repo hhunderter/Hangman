@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -140,7 +141,7 @@ class Highscore extends \Ilch\Model
         $this->games += $games;
         return $this;
     }
-    
+
     /**
      * Gets the Array of Model.
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -17,37 +18,37 @@ class Game extends \Ilch\Model
      * @var int
      */
     protected $userId = 0;
-    
+
     /**
      * @var string
      */
     protected $sessionId = '';
-    
+
     /**
      * @var string
      */
     protected $lastActivity = '';
-    
+
     /**
      * @var int
      */
     protected $score = 0;
-    
+
     /**
      * @var int
      */
     protected $health = -1;
-    
+
     /**
      * @var int
      */
     protected $wordId = 0;
-    
+
     /**
      * @var int
      */
     protected $difficulty = 1;
-    
+
     /**
      * @var string
      */
@@ -306,5 +307,4 @@ class Game extends \Ilch\Model
             ]
         );
     }
-
 }

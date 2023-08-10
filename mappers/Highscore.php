@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -46,20 +47,20 @@ class Highscore extends \Ilch\Mapper
             $result = $select->execute();
         }
 
-        $entryArray = $result->fetchRows();
-        if (empty($entryArray)) {
+        $entriesArray = $result->fetchRows();
+        if (empty($entriesArray)) {
             return null;
         }
-        $entrys = [];
+        $entries = [];
 
-        foreach ($entryArray as $entries) {
+        foreach ($entriesArray as $entryArray) {
             $entryModel = new EntriesModel();
 
-            $entryModel->setByArray($entries);
+            $entryModel->setByArray($entryArray);
 
-            $entrys[] = $entryModel;
+            $entries[] = $entryModel;
         }
-        return $entrys;
+        return $entries;
     }
 
     /**
@@ -71,7 +72,7 @@ class Highscore extends \Ilch\Mapper
     {
         return $this->getEntriesBy($where, ['id' => 'ASC'], $pagination);
     }
-    
+
     /**
      * @param \Ilch\Pagination|null $pagination
      * @return null|array
@@ -91,10 +92,10 @@ class Highscore extends \Ilch\Mapper
             $id = $id->getId();
         }
 
-        $entrys = $this->getEntriesBy(['id' => (int)$id], []);
+        $entries = $this->getEntriesBy(['id' => (int)$id], []);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -110,10 +111,10 @@ class Highscore extends \Ilch\Mapper
             $userId = $userId->getUserId();
         }
 
-        $entrys = $this->getEntriesBy(['user_id' => (int)$userId], []);
+        $entries = $this->getEntriesBy(['user_id' => (int)$userId], []);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -134,7 +135,7 @@ class Highscore extends \Ilch\Mapper
                 ->execute();
             $result = $model->getId();
         } else {
-            $result = (int)$this->db()->insert($this->tablename)
+            $result = $this->db()->insert($this->tablename)
                 ->values($fields)
                 ->execute();
         }
@@ -164,7 +165,7 @@ class Highscore extends \Ilch\Mapper
     public function reset(): bool
     {
         $this->db()->truncate($this->tablename);
-        return $this->db()->queryMulti('ALTER TABLE `[prefix]_'.$this->tablename.'` auto_increment = 1;');
+        return $this->db()->queryMulti('ALTER TABLE `[prefix]_' . $this->tablename . '` auto_increment = 1;');
     }
 
     /**
@@ -173,15 +174,15 @@ class Highscore extends \Ilch\Mapper
      */
     public function getJson(int $options = 0): string
     {
-        $entryArray = $this->getEntriesBy();
-        $entrys = [];
+        $entriesArray = $this->getEntriesBy();
+        $entries = [];
 
-        if ($entryArray) {
-            foreach ($entryArray as $entryModel) {
-                $entrys[] = $entryModel->getArray(false);
+        if ($entriesArray) {
+            foreach ($entriesArray as $entryModel) {
+                $entries[] = $entryModel->getArray(false);
             }
         }
-        
-        return json_encode($entrys, $options);
+
+        return json_encode($entries, $options);
     }
 }

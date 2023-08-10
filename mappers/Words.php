@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Dennis Reilard alias hhunderter
  * @package ilch
@@ -18,7 +19,7 @@ class Words extends \Ilch\Mapper
     /**
      * @var string
      */
-    public $dataFile = APPLICATION_PATH.'/modules/hangman/config/dataWords.json';
+    public $dataFile = APPLICATION_PATH . '/modules/hangman/config/dataWords.json';
 
     /**
      * @return boolean
@@ -51,21 +52,21 @@ class Words extends \Ilch\Mapper
             $result = $select->execute();
         }
 
-        $entryArray = $result->fetchRows();
+        $entriesArray = $result->fetchRows();
 
-        if (empty($entryArray)) {
+        if (empty($entriesArray)) {
             return null;
         }
-        $entrys = [];
+        $entries = [];
 
-        foreach ($entryArray as $entries) {
+        foreach ($entriesArray as $entryArray) {
             $entryModel = new EntriesModel();
 
-            $entryModel->setByArray($entries);
+            $entryModel->setByArray($entryArray);
 
-            $entrys[] = $entryModel;
+            $entries[] = $entryModel;
         }
-        return $entrys;
+        return $entries;
     }
 
     /**
@@ -107,10 +108,10 @@ class Words extends \Ilch\Mapper
             $id = $id->getId();
         }
 
-        $entrys = $this->getEntriesBy(['id' => (int)$id], []);
+        $entries = $this->getEntriesBy(['id' => (int)$id], []);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -127,10 +128,10 @@ class Words extends \Ilch\Mapper
             $text = $text->getText();
         }
 
-        $entrys = $this->getEntriesBy([new \Ilch\Database\Mysql\Expression\Comparison('LOWER (`text`)', '=', $this->db()->escape(strtolower($text), true))], []);
+        $entries = $this->getEntriesBy([new \Ilch\Database\Mysql\Expression\Comparison('LOWER (`text`)', '=', $this->db()->escape(strtolower($text), true))], []);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -147,10 +148,10 @@ class Words extends \Ilch\Mapper
         $pagination->setRowsPerPage(1);
         $pagination->setPage(1);
 
-        $entrys = $this->getEntriesBy(array_merge(['difficulty' => $difficulty], ($locale ? [$this->db()->select()->orX([$this->db()->select()->orX(['locale' => $locale]), $this->db()->select()->orX(['locale' => ''])])] : [])), ['RAND()' => ''], $pagination);
+        $entries = $this->getEntriesBy(array_merge(['difficulty' => $difficulty], ($locale ? [$this->db()->select()->orX([$this->db()->select()->orX(['locale' => $locale]), $this->db()->select()->orX(['locale' => ''])])] : [])), ['RAND()' => ''], $pagination);
 
-        if (!empty($entrys)) {
-            return reset($entrys);
+        if (!empty($entries)) {
+            return reset($entries);
         }
 
         return null;
@@ -191,7 +192,7 @@ class Words extends \Ilch\Mapper
                 ->execute();
             $result = $model->getId();
         } else {
-            $result = (int)$this->db()->insert($this->tablename)
+            $result = $this->db()->insert($this->tablename)
                 ->values($fields)
                 ->execute();
         }
@@ -221,20 +222,20 @@ class Words extends \Ilch\Mapper
      */
     public function getJson(bool $save = false, int $options = 0): string
     {
-        $entryArray = $this->getEntriesBy();
-        $entrys = [];
+        $entriesArray = $this->getEntriesBy();
+        $entries = [];
 
-        if ($entryArray) {
-            foreach ($entryArray as $entryModel) {
-                $entrys[] = $entryModel->getArray(false);
+        if ($entriesArray) {
+            foreach ($entriesArray as $entryModel) {
+                $entries[] = $entryModel->getArray(false);
             }
         }
-        $json = json_encode($entrys, $options);
+        $json = \json_encode($entries, $options);
 
         if ($save) {
             $this->saveJsonFile($json);
         }
-        
+
         return $json;
     }
 
