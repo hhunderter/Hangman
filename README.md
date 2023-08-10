@@ -8,6 +8,11 @@ Dieses Modul gibt Ihren Mitgliedern oder Gästen die Möglichkeit, das Spiel zu 
 
 Reilard, Dennis
 
+# Vorraussetzung
+
+Ilch-Core >= 2.1.43
+PHP-Version >= 7.3
+
 # Installation
 
 alle Dateien, in ihrer Ordnerstrucktur hochladen (*Ilch2Root*/application/modules/hangman/)
