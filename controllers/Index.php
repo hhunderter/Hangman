@@ -71,50 +71,50 @@ class Index extends \Ilch\Controller\Frontend
         }
 
         //Galgen
-        imageline($img, 72.5, 310, 250, 310, $black);
+        imageline($img, 72, 310, 250, 310, $black);
         imageline($img, 180, 310, 200, 55, $black);
-        imageline($img, 72.5, 40, 200, 55, $black);
-        imageline($img, 72.5, 40, 72.5, 59, $black);
+        imageline($img, 72, 40, 200, 55, $black);
+        imageline($img, 72, 40, 72, 59, $black);
 
         switch ($this->getRequest()->getParam('id')  ?? 0) {
             default:
             case 6:
                 //Gesicht
-                imageline($img, 72.5 - 13, 72.5 + 2, 72.5 - 5, 59 + 61 - 30, $black);
-                imageline($img, 72.5 - 5, 72.5 + 2, 72.5 - 10, 59 + 61 - 30, $black);
+                imageline($img, 72 - 13, 72 + 2, 72 - 5, 59 + 61 - 30, $black);
+                imageline($img, 72 - 5, 72 + 2, 72 - 10, 59 + 61 - 30, $black);
 
-                imageline($img, 72.5 - 13 + 20, 72.5 + 2, 72.5 - 5 + 20, 59 + 61 - 30, $black);
-                imageline($img, 72.5 - 5 + 20, 72.5 + 2, 72.5 - 10 + 20, 59 + 61 - 30, $black);
+                imageline($img, 72 - 13 + 20, 72 + 2, 72 - 5 + 20, 59 + 61 - 30, $black);
+                imageline($img, 72 - 5 + 20, 72 + 2, 72 - 10 + 20, 59 + 61 - 30, $black);
 
-                imageline($img, 72.5 + 15, 72.5 + 28, 72.5 - 15, 72.5 + 28, $black);
+                imageline($img, 72 + 15, 72 + 28, 72 - 15, 72 + 28, $black);
 
-                imageline($img, 72.5 + 3 - 5, 72.5 + 28 + 4, 72.5 + 3 - 5, 72.5 + 28, $black);
-                imageline($img, 72.5 + 3 + 5, 72.5 + 28 + 4, 72.5 + 3 + 5, 72.5 + 28, $black);
-                imageline($img, 72.5 + 2, 72.5 + 28 + 4 + 4, 72.5 + 3, 72.5 + 28 + 2, $black);
-                imagearc($img, 72.5 + 3, 72.5 + 28 + 4, 10, 10, 0, 180, $black);
+                imageline($img, 72 + 3 - 5, 72 + 28 + 4, 72 + 3 - 5, 72 + 28, $black);
+                imageline($img, 72 + 3 + 5, 72 + 28 + 4, 72 + 3 + 5, 72 + 28, $black);
+                imageline($img, 72 + 2, 72 + 28 + 4 + 4, 72 + 3, 72 + 28 + 2, $black);
+                imagearc($img, 72 + 3, 72 + 28 + 4, 10, 10, 0, 180, $black);
 
                 //Arm Links
-                imageline($img, 72.5, 150, 72.5 - 50, 120, $black);
+                imageline($img, 72, 150, 72 - 50, 120, $black);
             // no break
             case 5:
                 //Arm Rechts
-                imageline($img, 72.5, 150, 72.5 + 60, 120, $black);
+                imageline($img, 72, 150, 72 + 60, 120, $black);
             // no break
             case 4:
                 //Bein Rechts
-                imageline($img, 72.5, 200, 72.5 + 40, 280, $black);
+                imageline($img, 72, 200, 72 + 40, 280, $black);
             // no break
             case 3:
                 //Bein Links
-                imageline($img, 72.5, 200, 72.5 - 40, 280, $black);
+                imageline($img, 72, 200, 72 - 40, 280, $black);
             // no break
             case 2:
                 //Körper
-                imageline($img, 72.5, 200, 72.5, 59 + 61, $black);
+                imageline($img, 72, 200, 72, 59 + 61, $black);
             // no break
             case 1:
                 //Kopf
-                imageellipse($img, 72.5, 59 + 61 / 2, 61, 61, $black);
+                imageellipse($img, 72, (int)(59 + 61 / 2), 61, 61, $black);
             // no break
             case 0:
         }
