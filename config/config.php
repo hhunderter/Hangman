@@ -16,7 +16,7 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.2.1',
+        'version' => '1.2.2',
         'icon_small' => 'fa-solid fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
@@ -134,6 +134,11 @@ class Config extends \Ilch\Config\Install
                 $this->db()->update('modules')->values(['icon_small' => $this->config['icon_small']])->where(['key' => $this->config['key']])->execute();
             // no break
             case "1.2.1":
+                // update zu 1.2.2
+                /*
+                */
+                // no break
+            case "1.2.2":
                 // update zu 1.?.?
                 /*
                 */
