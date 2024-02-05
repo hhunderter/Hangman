@@ -513,7 +513,7 @@ class Templates
     {
         $toout = $this->parseIf($pos);
 
-        mt_srand((double)microtime() * 1000000);
+        mt_srand((int)microtime() * 1000000);
         $z = '##@@' . mt_rand() . '@@##';
 
         foreach ($this->getKeys() as $k => $v) {

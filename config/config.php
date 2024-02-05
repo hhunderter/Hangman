@@ -16,7 +16,7 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.2.2',
+        'version' => '1.2.3',
         'icon_small' => 'fa-solid fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
@@ -139,6 +139,11 @@ class Config extends \Ilch\Config\Install
                 */
                 // no break
             case "1.2.2":
+                // update zu 1.2.3
+                /*
+                */
+                // no break
+            case "1.2.3":
                 // update zu 1.?.?
                 /*
                 */
