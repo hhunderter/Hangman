@@ -11,49 +11,47 @@ $entries = $this->get('entries');
 <h1>
     <?=$this->getTrans('hangman') ?>
 </h1>
-<div class="form-group">
+<div class="row mb-3">
     <ul class="nav nav-tabs">
-        <li class="">
+        <li class="nav-item">
             <a href="<?=$this->getUrl(['action' => 'index']) ?>"><?=$this->getTrans('game') ?></a>
         </li>
-        <li class="active">
+        <li class="nav-item active">
             <a href="<?=$this->getUrl(['action' => 'highscore']) ?>"><?=$this->getTrans('highscore') ?></a>
         </li>
     </ul>
 </div>
 <div class="teams" id="hangman-container">
-    <div class="col-lg-12" id="hangman-form-container">
+    <div class="col-xl-12" id="hangman-form-container">
         <?php
         if ($entries) {
             ?>
-            <div class="table-responsive">
-                <table class="table table-hover table-striped">
-                    <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
+            <table class="table table-hover table-striped">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th><?=$this->getTrans('user') ?></th>
+                    <th><?=$this->getTrans('score') ?></th>
+                    <th><?=$this->getTrans('games') ?></th>
+                </tr>
+                </thead>
+                <?php
+                foreach ($entries ?? [] as $entry) {
+                    $user = $this->get('userMapper')->getUserById($entry->getUserId()); ?>
+                    <tbody>
                     <tr>
-                        <th><?=$this->getTrans('user') ?></th>
-                        <th><?=$this->getTrans('score') ?></th>
-                        <th><?=$this->getTrans('games') ?></th>
+                        <td><?=$this->escape($user->getName()) ?></td>
+                        <td><?=$entry->getScore() ?></td>
+                        <td><?=$entry->getGames() ?></td>
                     </tr>
-                    </thead>
+                    </tbody>
                     <?php
-                    foreach ($entries ?? [] as $entry) {
-                        $user = $this->get('userMapper')->getUserById($entry->getUserId()); ?>
-                        <tbody>
-                        <tr>
-                            <td><?=$this->escape($user->getName()) ?></td>
-                            <td><?=$entry->getScore() ?></td>
-                            <td><?=$entry->getGames() ?></td>
-                        </tr>
-                        </tbody>
-                        <?php
-                    } ?>
-                </table>
-            </div>
+                } ?>
+            </table>
             <?php
         } else {
             ?>

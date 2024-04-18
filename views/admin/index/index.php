@@ -13,11 +13,11 @@ $pagination = $this->get('pagination');
 ?>
 <h1><?=$this->getTrans('manage') ?></h1>
 
-<div class="form-group">
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label for="difficulty" class="col-lg-2 control-label"><?=$this->getTrans('difficulty') ?></label>
-            <div class="col-lg-4">
+<div class="row mb-3">
+    <div class="col-xl-6">
+        <div class="row mb-3">
+            <label for="difficulty" class="col-xl-2 col-form-label"><?=$this->getTrans('difficulty') ?></label>
+            <div class="col-xl-4">
                 <select class="chosen-select form-control" id="difficulty" name="difficulty" data-placeholder="">
                     <option value="" <?=(empty($this->getRequest()->getParam('difficulty'))) ? 'selected=""' : '' ?>><?=$this->getTrans('all') ?></option>
                     <?php
@@ -31,10 +31,10 @@ $pagination = $this->get('pagination');
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label for="locale" class="col-lg-2 control-label"><?=$this->getTrans('locale') ?></label>
-            <div class="col-lg-4">
+    <div class="col-xl-6">
+        <div class="row mb-3">
+            <label for="locale" class="col-xl-2 col-form-label"><?=$this->getTrans('locale') ?></label>
+            <div class="col-xl-4">
                 <select class="chosen-select form-control" id="locale" name="locale" data-placeholder="">
                     <option value="" <?=(empty($this->getRequest()->getParam('locale'))) ? 'selected=""' : '' ?>><?=$this->getTrans('all') ?></option>
                     <?php
@@ -49,11 +49,11 @@ $pagination = $this->get('pagination');
         </div>
     </div>
 </div>
-<div class="form-group">
+<div class="row mb-3">
 <?=$pagination->getHtml($this, ['action' => 'index']) ?>
-    <form class="form-horizontal col-lg-12" method="POST" id="groupForm">
-    <?=$this->getTokenField() ?>
-        <div class="table-responsive">
+    <div class="col-xl-12">
+        <form method="POST" id="groupForm">
+        <?=$this->getTokenField() ?>
             <table class="table table-hover table-striped">
                 <colgroup>
                     <col class="icon_width">
@@ -88,8 +88,8 @@ $pagination = $this->get('pagination');
 
                 </tbody>
             </table>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 <?=$pagination->getHtml($this, ['action' => 'index']) ?>
 <script>

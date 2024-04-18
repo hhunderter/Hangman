@@ -10,7 +10,7 @@ Reilard, Dennis
 
 # Vorraussetzung
 
-Ilch-Core >= 2.1.43
+Ilch-Core >= 2.2.0
 PHP-Version >= 7.3
 
 # Installation

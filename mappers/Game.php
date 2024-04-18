@@ -86,7 +86,7 @@ class Game extends \Ilch\Mapper
      * @param int|EntriesModel $id
      * @return null|EntriesModel
      */
-    public function getEntryById(int $id): ?EntriesModel
+    public function getEntryById($id): ?EntriesModel
     {
         if (is_a($id, EntriesModel::class)) {
             $id = $id->getId();
