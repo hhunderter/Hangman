@@ -10,8 +10,8 @@ $hangmanLib = $this->get('hangmanLib');
 </h1>
 <div class="row mb-3">
     <ul class="nav nav-tabs">
-        <li class="nav-item active">
-            <a class="nav-link" href="<?=$this->getUrl(['action' => 'index']) ?>"><?=$this->getTrans('game') ?></a>
+        <li class="nav-item">
+            <a class="nav-link active" href="<?=$this->getUrl(['action' => 'index']) ?>"><?=$this->getTrans('game') ?></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="<?=$this->getUrl(['action' => 'highscore']) ?>"><?=$this->getTrans('highscore') ?></a>

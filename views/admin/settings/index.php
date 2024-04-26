@@ -55,7 +55,7 @@
         <label for="Color" class="col-xl-2 col-form-label">
             <?=$this->getTrans('Color') ?>:
         </label>
-        <div class="col-xl-4col-xl-4">
+        <div class="col-xl-4">
             <input type="Color"
                    class="form-control"
                    id="Color"
