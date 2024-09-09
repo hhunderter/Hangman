@@ -763,7 +763,7 @@ class Hangman
      */
     private function msg(string $msg, string $type = 'success'): string
     {
-        return '<div class="alert alert-' . $type . ' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' . $msg . '</div>';
+        return '<div class="alert alert-' . $type . ' alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
     }
 
     /**

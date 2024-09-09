@@ -9,14 +9,14 @@ $hangmanLib = $this->get('hangmanLib');
 $entries = $this->get('entrie');
 ?>
 <h1><?=($entries->getId()) ? $this->getTrans('edit') : $this->getTrans('add') ?></h1>
-<form role="form" class="form-horizontal" method="POST">
+<form role="form" method="POST">
     <?=$this->getTokenField() ?>
 
-    <div class="form-group <?=$this->validation()->hasError('text') ? 'has-error' : '' ?>">
-        <label for="text" class="col-lg-2 control-label">
+    <div class="row mb-3 <?=$this->validation()->hasError('text') ? 'has-error' : '' ?>">
+        <label for="text" class="col-xl-2 col-form-label">
             <?=$this->getTrans('text') ?>
         </label>
-        <div class="col-lg-4">
+        <div class="col-xl-8">
             <input class="form-control"
                    type="text"
                    id="text"
@@ -24,11 +24,11 @@ $entries = $this->get('entrie');
                    value="<?=$this->escape($this->originalInput('text', $entries->getText())) ?>" />
         </div>
     </div>
-    <div class="form-group<?=$this->validation()->hasError('difficulty') ? ' has-error' : '' ?>">
-        <label for="difficulty" class="col-lg-2 control-label">
+    <div class="row mb-3<?=$this->validation()->hasError('difficulty') ? ' has-error' : '' ?>">
+        <label for="difficulty" class="col-xl-2 col-form-label">
             <?=$this->getTrans('difficulty') ?>
         </label>
-        <div class="col-lg-8">
+        <div class="col-xl-8">
             <select class="form-control" id="difficulty" name="difficulty">
             <?php foreach ($hangmanLib->getDifficultyTypes() as $id => $name) : ?>
                 <option value="<?=$id ?>" <?=($this->originalInput('difficulty', $entries->getDifficulty())) == $id ? 'selected=""' : '' ?>><?=$this->getTrans($name) ?></option>
@@ -36,11 +36,11 @@ $entries = $this->get('entrie');
             </select>
         </div>
     </div>
-    <div class="form-group<?=$this->validation()->hasError('locale') ? ' has-error' : '' ?>">
-        <label for="locale" class="col-lg-2 control-label">
+    <div class="row mb-3<?=$this->validation()->hasError('locale') ? ' has-error' : '' ?>">
+        <label for="locale" class="col-xl-2 col-form-label">
             <?=$this->getTrans('locale') ?>
         </label>
-        <div class="col-lg-8">
+        <div class="col-xl-8">
             <select class="form-control" id="locale" name="locale">
                 <option value="" <?=($this->originalInput('locale', $entries->getLocale())) == '' ? 'selected=""' : '' ?>><?=$this->getTrans('all') ?></option>
                 <?php foreach ($this->get('localeList') as $locale => $name) : ?>

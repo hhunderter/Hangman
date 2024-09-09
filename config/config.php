@@ -16,7 +16,7 @@ class Config extends \Ilch\Config\Install
      */
     public $config = [
         'key' => 'hangman',
-        'version' => '1.2.3',
+        'version' => '1.3.0',
         'icon_small' => 'fa-solid fa-list-ol',
         'author' => 'Reilard, Dennis alias hhunderter',
         'link' => 'https://github.com/hhunderter/hangman',
@@ -31,8 +31,8 @@ class Config extends \Ilch\Config\Install
                 'description' => 'A little hangman game',
             ],
         ],
-        'ilchCore' => '2.1.43',
-        'phpVersion' => '7.3',
+        'ilchCore' => '2.2.0',
+        'phpVersion' => '7.4',
     ];
 
     public function install()
@@ -110,12 +110,11 @@ class Config extends \Ilch\Config\Install
     {
         switch ($installedVersion) {
             case "1.0.0":
-            // update zu 1.1.0
+                // update zu 1.1.0
                 /*
                  Templates hinzugefügt
                  Daten Export erweitert
                 */
-
                 // no break
             case "1.1.0":
                 // update zu 1.2.0
@@ -123,7 +122,7 @@ class Config extends \Ilch\Config\Install
                  Bilder ausgewechselt gegen ein Dynamisches
                 */
                 removeDir(APPLICATION_PATH . '/modules/hangman/static/');
-            // no break
+                // no break
             case "1.2.0":
                 // update zu 1.2.1
                 /*
@@ -132,7 +131,7 @@ class Config extends \Ilch\Config\Install
                  * Code Verbesserungen
                 */
                 $this->db()->update('modules')->values(['icon_small' => $this->config['icon_small']])->where(['key' => $this->config['key']])->execute();
-            // no break
+                // no break
             case "1.2.1":
                 // update zu 1.2.2
                 /*

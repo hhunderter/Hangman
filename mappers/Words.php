@@ -85,7 +85,7 @@ class Words extends \Ilch\Mapper
      * @param string|null $locale
      * @return null|array
      */
-    public function getList(?\Ilch\Pagination $pagination = null, int $difficulty = null, string $locale = null): ?array
+    public function getList(?\Ilch\Pagination $pagination = null, ?int $difficulty = null, ?string $locale = null): ?array
     {
         $where = [];
         if ($difficulty !== null) {
